@@ -8,8 +8,7 @@ from .type_helpers import (
     RoutingMethodType,
 )
 
-from .catchment import Junction, Subcatchment, Outfall
-from .link import Conduit
+from .base_topology import Node, Link, Area
 
 
 @dataclass
@@ -250,9 +249,9 @@ class Report:
     continuity: Literal["YES, NO"] = "YES"
     flowstats: Literal["YES, NO"] = "YES"
     controls: Literal["YES, NO"] = "NO"
-    subcatchments: Literal["ALL", "NONE"] | list[Subcatchment] = "NONE"
-    nodes: Optional[Literal["ALL"] | list[Junction, Outfall]] = None
-    links: Optional[Literal["ALL"] | list[Conduit]] = None
+    subcatchments: Literal["ALL", "NONE"] | list[Area] = "NONE"
+    nodes: Optional[Literal["ALL"] | list[Node]] = None
+    links: Optional[Literal["ALL"] | list[Link]] = None
     lid: str = ""
 
     def __post_init__(self):

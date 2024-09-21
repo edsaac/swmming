@@ -1,10 +1,8 @@
 from dataclasses import dataclass
 from typing import Iterable, Literal, TextIO, Self
 
-from .meteo import Raingage
-from .catchment import Junction, Outfall
-from .link import Conduit
-from .catchment import Subcatchment
+from .meteorology import Raingage
+from .base_topology import Node, Link, Area
 
 
 @dataclass
@@ -43,12 +41,14 @@ class Map:
 class Coordinate:
     """Assigns X,Y coordinates to drainage system nodes."""
 
-    node: Junction | Outfall
+    node: Node
     coord: Iterable[float]
 
     def __post_init__(self):
-        if not isinstance(self.node, (Junction, Outfall)):
-            raise ValueError("node must be a Junction or Outfall object")
+        if not isinstance(self.node, Node):
+            raise ValueError(
+                "node must be a Node object, like a Junction or an Outfall"
+            )
 
         if len(self.coord) != 2:
             raise ValueError("coord must be a 2-element iterable")
@@ -125,13 +125,23 @@ class LinkVertex:
     """Assigns X,Y coordinates to interior vertex points of curved drainage
     system links. Include a separate line for each interior vertex of the
     link, ordered from the inlet node to the outlet node.
-    Straight-line links have no interior vertices and therefore are not listed in this section."""
 
-    link: Conduit
+    Straight-line links have no interior vertices and therefore are not listed
+    in this section.
+
+    Attributes
+    ----------
+    link : Link
+        Link object.
+    coord : Iterable[float]
+        Pair of X,Y coordinates.
+    """
+
+    link: Link
     coord: Iterable[float]
 
     def __post_init__(self):
-        if not isinstance(self.link, Conduit):
+        if not isinstance(self.link, Link):
             raise ValueError("link must be a Conduit object")
 
         if len(self.coord) != 2:
@@ -163,12 +173,14 @@ class PolygonVertex:
     subcatchment polygon, ordered in a consistent clockwise or counter-
     clockwise sequence."""
 
-    subcatchment: Subcatchment
+    subcatchment: Area
     coord: Iterable[float]
 
     def __post_init__(self):
-        if not isinstance(self.subcatchment, Subcatchment):
-            raise ValueError("subcatchment must be a Subcatchment object")
+        if not isinstance(self.subcatchment, Area):
+            raise ValueError(
+                "subcatchment must be an Area object, namely a Subcatchment"
+            )
 
         if len(self.coord) != 2:
             raise ValueError("coord must be a 2-element iterable")

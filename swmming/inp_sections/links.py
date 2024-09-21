@@ -1,11 +1,11 @@
 from dataclasses import dataclass
 from typing import Optional, TextIO, Iterable, Self
 
-from .catchment import Junction, Outfall
+from .base_topology import Node, Link
 
 
 @dataclass
-class Conduit:
+class Conduit(Link):
     """Identifies each conduit link of the drainage system.
     Conduits are pipes or channels that convey water from one node to another
 
@@ -35,8 +35,8 @@ class Conduit:
     """
 
     name: str
-    from_node: Junction | Outfall
-    to_node: Junction | Outfall
+    from_node: Node
+    to_node: Node
     length: float
     roughness: float
     in_offset: float = 0
@@ -45,11 +45,15 @@ class Conduit:
     max_flow: Optional[float] = None
 
     def __post_init__(self):
-        if not isinstance(self.from_node, (Junction, Outfall)):
-            raise ValueError("from_node must be a Junction or Outfall object")
+        if not isinstance(self.from_node, Node):
+            raise ValueError(
+                "from_node must be a BaseNode object, like a Junction or an Outfall"
+            )
 
-        if not isinstance(self.to_node, (Junction, Outfall)):
-            raise ValueError("to_node must be a Junction or Outfall object")
+        if not isinstance(self.to_node, Node):
+            raise ValueError(
+                "to_node must be a BaseNode object, like a Junction or an Outfall"
+            )
 
     @property
     def as_inp(self):
@@ -71,21 +75,21 @@ class Conduit:
             stream.write(f"{conduit.as_inp}\n")
 
 
-class Pump:
+class Pump(Link):
     def __init__(self):
         raise NotImplementedError("Pump is not yet implemented")
 
 
-class Orifice:
+class Orifice(Link):
     def __init__(self):
         raise NotImplementedError("Orifice is not yet implemented")
 
 
-class Weir:
+class Weir(Link):
     def __init__(self):
         raise NotImplementedError("Weir is not yet implemented")
 
 
-class Outlet:
+class Outlet(Link):
     def __init__(self):
         raise NotImplementedError("Outlet is not yet implemented")

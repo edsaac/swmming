@@ -5,8 +5,7 @@ from io import StringIO
 from typing import TextIO, Iterable, Self, Optional, Literal
 
 from . import xsection_shapes as xshapes
-from .catchment import Junction
-from .link import Conduit
+from .base_topology import Node, Link
 from .tabular import Curve
 
 
@@ -188,7 +187,7 @@ class XSection:
         geometry of a street.
     """
 
-    link: Conduit
+    link: Link
     shape: xshapes.BaseGeometricShape
     barrels: int = 1
     culvert: int | str = ""
@@ -403,7 +402,7 @@ class InletUsage:
         RECT_OPEN or TRAPEZOIDAL cross section.
     inlet : Inlet
         Inlet object to use.
-    node : Junction
+    node : Node
         Name of the network node receiving flow captured by the inlet.
     number : int = 1
         Number of replicate inlets placed on each side of the street.
@@ -425,9 +424,9 @@ class InletUsage:
         inlet leaving no place for water to flow except a into the inlet.
     """
 
-    conduit: Conduit
+    conduit: Link
     inlet: Inlet
-    node: Junction
+    node: Node
     number: int = 1
     percent_clogged: float = 0
     qmax: float = 0
@@ -436,14 +435,14 @@ class InletUsage:
     placement: Literal["AUTOMATIC", "ON_GRADE", "ON_SAG"] = "AUTOMATIC"
 
     def __post_init__(self):
-        if not isinstance(self.conduit, Conduit):
-            raise ValueError("conduit must be a Conduit object")
+        if not isinstance(self.conduit, Link):
+            raise ValueError("conduit must be a Link object, like a Conduit")
 
         if not isinstance(self.inlet, Inlet):
             raise ValueError("inlet must be an Inlet object")
 
-        if not isinstance(self.node, Junction):
-            raise ValueError("node must be a Junction object")
+        if not isinstance(self.node, Node):
+            raise ValueError("node must be a Node object, like a Junction")
 
     @property
     def as_inp(self):

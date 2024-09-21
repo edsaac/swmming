@@ -52,7 +52,7 @@ def assemble_inp(
     title=Title(),
     options=Options(),
     # evaporations=Optional[Iterable[Evaporation]],
-    # raingages=Optional[Iterable[Raingage]],
+    raingages: Optional[Iterable[Raingage]] = None,
     subcatchments: Optional[Iterable[Subcatchment]] = None,
     subareas: Optional[Iterable[Subarea]] = None,
     infiltration: Optional[Iterable[Infiltration]] = None,
@@ -82,6 +82,10 @@ def assemble_inp(
 
     options.make_inp(stream)
     add_empty_line()
+
+    if raingages:
+        Raingage.make_inp(stream, raingages)
+        add_empty_line()
 
     if subcatchments:
         Subcatchment.make_inp(stream, subcatchments)
