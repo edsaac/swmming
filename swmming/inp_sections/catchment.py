@@ -39,7 +39,6 @@ class Subcatchment(Area):
 
     """
 
-    name: str
     rain_gage: Raingage
     outlet: Node | Self
     area: float

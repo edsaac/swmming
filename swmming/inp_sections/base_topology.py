@@ -1,10 +1,20 @@
+from dataclasses import dataclass
+from typing import Optional, TextIO, Iterable, Self
+
+
+@dataclass
 class Node:
-    pass
+    name: str
+    elevation: float
 
 
+@dataclass
 class Link:
-    pass
+    name: str
+    from_node: Node
+    to_node: Node
 
 
+@dataclass
 class Area:
-    pass
+    name: str

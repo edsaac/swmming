@@ -8,7 +8,7 @@ from .tabular import Curve, Timeseries
 from .type_helpers import OutfallTypeType
 
 
-@dataclass
+@dataclass(kw_only=True)
 class Junction(Node):
     """Identifies each junction node of the drainage system. Junctions are
     points in space where channels and pipes connect together. For sewer
@@ -51,14 +51,10 @@ class Junction(Node):
     - xcoord and ycoord are additional optional attributes.
     """
 
-    name: str
-    elevation: float
     max_depth: float = 0
     init_depth: float = 0
     sur_depth: float = 0
     aponded: float = 0
-    xcoord: Optional[float] = None
-    ycoord: Optional[float] = None
 
     @property
     def as_inp(self):
@@ -76,7 +72,7 @@ class Junction(Node):
             stream.write(f"{junction.as_inp}\n")
 
 
-@dataclass
+@dataclass(kw_only=True)
 class Outfall(Node):
     """Identifies each outfall node (i.e., final downstream boundary) of the drainage system and the
     corresponding water stage elevation. Only one link can be incident on an outfall node.
@@ -105,8 +101,6 @@ class Outfall(Node):
         is not to route the outfall's discharge.
     """
 
-    name: str
-    elevation: float
     type_of_outfall: OutfallTypeType = "FREE"
     stage_data: Optional[float | Curve | Timeseries] = None
     gated: Literal["YES", "NO"] = "NO"
@@ -170,8 +164,8 @@ class Outfall(Node):
             stream.write(f"{outfall.as_inp}\n")
 
 
-@dataclass
-class Divider(Node):
+@dataclass(kw_only=True)
+class Divider(Junction):
     """Identifies each flow divider node of the drainage system. Flow dividers
     are junctions with exactly two outflow conduits where the total outflow is
     divided between the two in a prescribed manner.
@@ -217,18 +211,12 @@ class Divider(Node):
         is turned on.
     """
 
-    name: str
-    elevation: float
     divided_link: Link
     divider_type: Literal["OVERFLOW", "CUROFF", "TABULAR", "WEIR"]
     qmin: Optional[float] = None
     dcurve: Optional[Curve] = None
     ht: Optional[float] = None
     Cd: Optional[float] = None
-    max_depth: float = 0
-    init_depth: float = 0
-    sur_depth: float = 0
-    aponded: float = 0
 
 
 class Storage(Node):
